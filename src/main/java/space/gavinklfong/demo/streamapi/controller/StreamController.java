@@ -7,6 +7,7 @@ import space.gavinklfong.demo.streamapi.models.Product;
 import space.gavinklfong.demo.streamapi.service.StreamService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class StreamController {
@@ -26,4 +27,20 @@ public class StreamController {
     public List<Order> getOrders() {
         return streamService.getListOfOrders();
     }
+
+    @GetMapping(path = "/discounts")
+    public List<Product> applyDiscounts() {
+        return streamService.applyDiscount();
+    }
+
+    @GetMapping(path = "/productsEx4")
+    public List<Product> getProductsEx4() {
+        return streamService.getProductsEx4();
+    }
+
+    @GetMapping(path = "/cheapestItem")
+    public Optional<Product> getCheapestItem() {
+        return streamService.getCheapestItem();
+    }
+
 }
