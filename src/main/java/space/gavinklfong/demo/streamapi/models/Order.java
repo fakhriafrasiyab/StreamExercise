@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -50,6 +51,7 @@ public class Order {
 	)
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
+	@JsonIgnore
 	Set<Product> products;
 		
 }

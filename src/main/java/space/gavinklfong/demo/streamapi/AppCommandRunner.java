@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import space.gavinklfong.demo.streamapi.models.Customer;
 import space.gavinklfong.demo.streamapi.models.Order;
 import space.gavinklfong.demo.streamapi.models.Product;
@@ -30,6 +31,7 @@ public class AppCommandRunner implements CommandLineRunner {
 
 	
 	@Override
+	@Transactional
 	public void run(String... args) throws Exception {
 		log.info("running runner");
 		List<Customer> customers = customerRepos.findAll();
@@ -44,15 +46,15 @@ public class AppCommandRunner implements CommandLineRunner {
 		
 //		log.info("Customer count: " + count);
 
-//		orders.stream()
-//		.flatMap(o -> o.getProducts().stream())
-//		.forEach(System.out::println);
-		
-		
-		List<Product> products = productRepos.findAll();
-		products.stream()
-		.flatMap(p -> p.getOrders().stream())
+		orders.stream()
+		.flatMap(o -> o.getProducts().stream())
 		.forEach(System.out::println);
+		
+		
+//		List<Product> products = productRepos.findAll();
+//		products.stream()
+//		.flatMap(p -> p.getOrders().stream())
+//		.forEach(System.out::println);
 	}
 
 }
