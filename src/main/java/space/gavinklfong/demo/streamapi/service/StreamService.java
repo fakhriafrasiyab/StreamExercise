@@ -1,5 +1,6 @@
 package space.gavinklfong.demo.streamapi.service;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 import space.gavinklfong.demo.streamapi.models.Order;
 import space.gavinklfong.demo.streamapi.models.Product;
@@ -59,5 +60,19 @@ public class StreamService {
         return productRepo.findAll().stream()
                 .filter(product -> product.getCategory().equalsIgnoreCase("Books"))
                 .min(Comparator.comparing(Product::getPrice));
+    }
+
+    public List<Order> getLast3Order() {
+        return orderRepo.findAll().stream()
+                .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                .limit(3).collect(Collectors.toList());
+    }
+
+    public List<Product> getOrdersEx7() {
+        return orderRepo.findAll().stream()
+                .filter(order -> order.getOrderDate().isEqual(LocalDate.of(2021, 3, 15)))
+                .peek(order -> System.out.println(order))
+                .flatMap(order -> order.getProducts().stream())
+                .distinct().collect(Collectors.toList());
     }
 }

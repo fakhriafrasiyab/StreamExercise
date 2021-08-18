@@ -43,4 +43,13 @@ public class StreamController {
         return streamService.getCheapestItem();
     }
 
+    @GetMapping(path = "/last3Item")
+    public List<Order> getLast3Order() {
+        return streamService.getLast3Order();
+    }
+
+    @GetMapping(path = "/getOrdersEx7")
+    public List<Product> getOrdersEx7() {
+        return streamService.getOrdersEx7();
+    }
 }

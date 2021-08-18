@@ -46,10 +46,10 @@ public class AppCommandRunner implements CommandLineRunner {
 		
 //		log.info("Customer count: " + count);
 
-		orders.stream()
-		.flatMap(o -> o.getProducts().stream())
-		.forEach(System.out::println);
-		
+//		orders.stream()
+//		.flatMap(o -> o.getProducts().stream())
+//		.forEach(System.out::println);
+//
 		
 //		List<Product> products = productRepos.findAll();
 //		products.stream()
