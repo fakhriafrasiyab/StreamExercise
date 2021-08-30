@@ -1,17 +1,15 @@
 package space.gavinklfong.demo.streamapi.service;
 
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
+import space.gavinklfong.demo.streamapi.models.Customer;
 import space.gavinklfong.demo.streamapi.models.Order;
 import space.gavinklfong.demo.streamapi.models.Product;
 import space.gavinklfong.demo.streamapi.repos.OrderRepo;
 import space.gavinklfong.demo.streamapi.repos.ProductRepo;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,5 +72,71 @@ public class StreamService {
                 .peek(order -> System.out.println(order))
                 .flatMap(order -> order.getProducts().stream())
                 .distinct().collect(Collectors.toList());
+    }
+
+    public Double sumOrders() {
+        return orderRepo.findAll().stream()
+                .filter(order -> order.getOrderDate().compareTo(LocalDate.of(2021, 2, 1)) >= 0)
+                .filter(order -> order.getOrderDate().compareTo(LocalDate.of(2021, 3, 1)) < 0)
+                .flatMap(order -> order.getProducts().stream())
+                .mapToDouble(Product::getPrice)
+                .peek(product -> System.out.println(product))
+                .sum();
+    }
+
+    public Double averageOrders() {
+        return orderRepo.findAll().stream()
+                .filter(order -> order.getOrderDate().compareTo(LocalDate.of(2021, 2, 1)) >= 0)
+                .filter(order -> order.getOrderDate().compareTo(LocalDate.of(2021, 3, 1)) < 0)
+                .flatMap(order -> order.getProducts().stream())
+                .mapToDouble(Product::getPrice)
+                .average().getAsDouble();
+    }
+
+    public void statisticFigures() {
+        DoubleSummaryStatistics summaryStatistics = productRepo.findAll().stream()
+                .filter(product -> product.getCategory().equalsIgnoreCase("books"))
+                .mapToDouble(productRepo -> productRepo.getPrice())
+                .summaryStatistics();
+
+        System.out.println(summaryStatistics.getMax());
+        System.out.println(summaryStatistics.getCount());
+        System.out.println(summaryStatistics.getMin());
+        System.out.println(summaryStatistics.getAverage());
+        System.out.println(summaryStatistics.getSum());
+    }
+
+    public Map<Long, Integer> ex11() {
+        return orderRepo.findAll().stream()
+                .collect(
+                        Collectors.toMap(order -> order.getId(),
+                                order -> order.getProducts().size())
+                );
+    }
+
+    public Map<Customer, List<Order>> ex12() {
+        return orderRepo.findAll().stream()
+                .collect(Collectors.groupingBy(Order::getCustomer));
+    }
+
+    public Map<Order, Double> ex13() {
+        return orderRepo.findAll().stream()
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        order -> order.getProducts().stream()
+                                .mapToDouble(product -> product.getPrice()).sum()
+                ));
+    }
+
+    public Map<String, List<String>> ex14() {
+        return productRepo.findAll().stream().
+                collect(Collectors.groupingBy(Product::getCategory,
+                        Collectors.mapping(product -> product.getName(), Collectors.toList())));
+    }
+
+    public Map<String, Optional<Product>> ex15() {
+        return productRepo.findAll().stream()
+                .collect(Collectors.groupingBy(Product::getCategory,
+                        Collectors.maxBy(Comparator.comparing(Product::getPrice))));
     }
 }
